@@ -2,6 +2,7 @@ package com.dianqu.android.coolweather;
 
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,7 +45,7 @@ public class ChooseAreaFragment extends Fragment {
 
     private ListView mListView;
     private ArrayAdapter<String> mAdapter;
-
+    //用于存储数据的集合 用前先清空
     private List<String> mDataList = new ArrayList<>();
     /*省列表*/
     private List<Province> mProvinceList;
@@ -84,6 +85,12 @@ public class ChooseAreaFragment extends Fragment {
                 } else if (mCurrentLevel == LEVEL_CITY) {
                     mSelectedCity = mCityList.get(position);
                     queryCounties();
+                } else if (mCurrentLevel == LEVEL_COUNTY) {
+                    String weatherId = mCountyList.get(position).getWeatherId();
+                    Intent intent = new Intent(getActivity(), WeatherActivity.class);
+                    intent.putExtra("weather_id", weatherId);
+                    startActivity(intent);
+                    getActivity().finish();
                 }
             }
         });
@@ -146,7 +153,6 @@ public class ChooseAreaFragment extends Fragment {
             String address = "http://guolin.tech/api/china/" + provinceCode;
             queryFromServer(address, "city");
         }
-
     }
 
     /*查询市内所有的县，优先从数据库查询，如果没有查询到再去服务器上查询*/
@@ -175,7 +181,8 @@ public class ChooseAreaFragment extends Fragment {
     /*根据传入的地址和类型从服务器上查询省市县数据*/
     private void queryFromServer(String address, final String type) {
         showProgressDialog();
-        HttpUtil.sendOkHttpRequest(address, new Callback() {
+        HttpUtil.sendOkHttpRequest(address,
+                new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 getActivity().runOnUiThread(new Runnable() {

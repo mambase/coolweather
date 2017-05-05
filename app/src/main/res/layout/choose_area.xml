@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
@@ -16,7 +17,7 @@
             android:layout_centerInParent="true"
             android:textColor="#fff"
             android:textSize="20sp"
-            android:text="杭州"/>
+            tools:text="杭州"/>
         <Button
             android:id="@+id/back_button"
             android:layout_width="25dp"
