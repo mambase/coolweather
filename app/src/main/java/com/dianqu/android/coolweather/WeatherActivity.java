@@ -63,6 +63,8 @@ public class WeatherActivity extends AppCompatActivity {
 
     private ImageView mBingPicImg;
 
+    private String mWeatherId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,19 +105,17 @@ public class WeatherActivity extends AppCompatActivity {
         String weatherString = preferences.getString("weather", null);
         String bingPic = preferences.getString("bing_pic", null);
 
-        final String weatherId;
-
         if (weatherString != null) {
             //有缓存时直接解析天气数据
             Weather weather = Utility.handleWeatherResponse(weatherString);
-            weatherId = weather.basic.weatherId;
+            mWeatherId = weather.basic.weatherId;
             showWeatherInfo(weather);
         } else {
             //无缓存时去服务器查询天气
-            weatherId = getIntent().getStringExtra("weather_id");
-            Log.d(TAG, "weatherId=" + weatherId);
+            mWeatherId = getIntent().getStringExtra("weather_id");
+            Log.d(TAG, "weatherId=" + mWeatherId);
             mWeatherLayout.setVisibility(View.INVISIBLE);
-            requestWeather(weatherId);
+            requestWeather(mWeatherId);
         }
 
         mNavButton.setOnClickListener(new View.OnClickListener() {
@@ -137,7 +137,7 @@ public class WeatherActivity extends AppCompatActivity {
         mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                requestWeather(weatherId);
+                requestWeather(mWeatherId);
             }
         });
 
@@ -149,6 +149,8 @@ public class WeatherActivity extends AppCompatActivity {
             loadBingPic();
         }
     }
+
+    //------------------------------------------------------------------------------
 
     /*根据天气id请求城市天气信息*/
     public void requestWeather(final String weatherId) {
@@ -184,6 +186,7 @@ public class WeatherActivity extends AppCompatActivity {
                                     .edit();
                             editor.putString("weather", responseText);
                             editor.apply();
+                            mWeatherId = weatherId;
                             showWeatherInfo(weather);
                             Log.d(TAG, "im in");
                         } else {
