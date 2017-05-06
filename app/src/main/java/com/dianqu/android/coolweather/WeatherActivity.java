@@ -2,6 +2,7 @@ package com.dianqu.android.coolweather;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.dianqu.android.coolweather.gson.Forecast;
 import com.dianqu.android.coolweather.gson.Weather;
+import com.dianqu.android.coolweather.service.AutoUpdateService;
 import com.dianqu.android.coolweather.util.HttpUtil;
 import com.dianqu.android.coolweather.util.Utility;
 
@@ -244,6 +246,9 @@ public class WeatherActivity extends AppCompatActivity {
         mCarWashText.setText(carWash);
         mSportText.setText(sport);
         mWeatherLayout.setVisibility(View.VISIBLE);
+
+        Intent intent = new Intent(this, AutoUpdateService.class);
+        startService(intent);
     }
 
     /*加载必应每日一图*/
